@@ -1,0 +1,33 @@
+---
+- name: Install Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+  tags:
+    - nginx
+
+- name: Copy Nginx default site configuration
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+    mode: '0644'
+  notify: Restart Nginx # If this file changes, Nginx needs a little restart!
+  tags:
+    - nginx
+
+- name: Enable Nginx default site (make sure that symlink is there!)
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+  notify: Restart Nginx
+  tags:
+    - nginx
+
+- name: Ensure Nginx service is running and enabled
+  ansible.builtin.systemd:
+    name: nginx
+    state: started
+    enabled: yes
+  tags:
+    - nginx

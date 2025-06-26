@@ -1,0 +1,22 @@
+---
+- name: Setup Web Server with Static Site
+  hosts: webservers # We're targeting our 'webservers' group from inventory.ini
+  become: yes         # Yep, we'll need admin powers (sudo) for these tasks!
+
+  vars:
+    # --- SSH Role Stuff ---
+    # Your public key that'll go on the server.
+    # Seriously, replace this with the real deal (you can 'cat ~/.ssh/id_rsa.pub' to see it!)
+    ssh_public_key: ~/.ssh/id_rsa.pub
+
+    # --- App Role Stuff ---
+    # Where's your website package? This path is from where you run the playbook.
+    static_site_tarball: "files/my_static_site.tar.gz"
+    # And where should it land on the server?
+    static_site_dest_dir: "/var/www/html/my_static_site"
+
+  roles:
+    - role: base # First, get the server's basics sorted.
+    - role: ssh  # Then, add our SSH key.
+    - role: nginx # Next, get Nginx up and running.
+    - role: app  # Finally, put our website files on there!

@@ -1,0 +1,6 @@
+---
+- name: Restart Nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted
+  listen: "Restart Nginx" # This just matches up with the 'notify' in the tasks!

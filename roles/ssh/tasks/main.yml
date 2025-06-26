@@ -1,0 +1,20 @@
+---
+- name: Ensure .ssh directory exists for the remote user
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user }}/.ssh"
+    state: directory
+    mode: '0700'
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  tags:
+    - ssh
+    - security
+
+- name: Add public key to authorized_keys
+  ansible.builtin.authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    key: "{{ ssh_public_key }}"
+  tags:
+    - ssh
+    - security
